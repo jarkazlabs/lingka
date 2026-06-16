@@ -68,8 +68,12 @@ export function FieldObject({ object, fieldRef }: FieldObjectProps) {
       type="button"
       onPointerDown={handlePointerDown}
     >
+      <span className="field-object__aura" />
+      <span className="field-object__core">
+        <span className="field-object__sigil" />
+      </span>
       <span className="field-object__label">{object.label}</span>
-      <span className="field-object__age">{Math.floor(object.age)}s</span>
+      <span className="field-object__age">{object.family}</span>
     </button>
   );
 }

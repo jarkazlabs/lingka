@@ -12,7 +12,7 @@ interface FieldState {
 
 export const useFieldStore = create<FieldState>((set) => ({
   objects: initialFieldObjects,
-  observeMode: false,
+  observeMode: true,
   moveObject: (id, x, y) =>
     set((state) => ({
       objects: state.objects.map((object) =>

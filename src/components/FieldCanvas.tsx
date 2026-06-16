@@ -18,7 +18,9 @@ export function FieldCanvas() {
 
   return (
     <section className="field" ref={fieldRef} aria-label="Lingka field surface">
+      <div className="field-paper" />
       <div className="field-grid" />
+      <div className="field-mandala" aria-hidden="true" />
       {observeMode ? (
         <ObserveOverlay objects={objects} relationships={relationships} />
       ) : null}

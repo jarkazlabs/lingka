@@ -7,8 +7,8 @@ export function Toolbar() {
   return (
     <aside className="toolbar" aria-label="Field controls">
       <div>
-        <p className="toolbar__eyebrow">Lingka</p>
-        <h1 className="toolbar__title">Field</h1>
+        <p className="toolbar__eyebrow">Living Mandala</p>
+        <h1 className="toolbar__title">Lingka</h1>
       </div>
       <button
         className="observe-toggle"
