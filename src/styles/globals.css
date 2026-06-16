@@ -143,6 +143,114 @@ button {
     repeating-conic-gradient(from 0deg, rgba(85, 76, 57, 0.16) 0 0.7deg, transparent 0.7deg 30deg);
 }
 
+.living-field-layer {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.field-distortion {
+  position: absolute;
+  left: var(--distortion-x);
+  top: var(--distortion-y);
+  width: var(--distortion-width);
+  height: var(--distortion-height);
+  opacity: calc(0.16 + var(--distortion-strength) * 0.26);
+  border-radius: 999px;
+  background:
+    repeating-radial-gradient(ellipse at center, rgba(76, 68, 50, 0.14) 0 1px, transparent 2px 8px),
+    radial-gradient(ellipse at center, rgba(255, 252, 226, 0.28), rgba(96, 111, 74, 0.11) 44%, transparent 72%);
+  filter: blur(0.8px);
+  mix-blend-mode: multiply;
+  transform: translate(-50%, -50%) rotate(var(--distortion-angle)) scale(0.96);
+  animation: distortion-tide 12s ease-in-out infinite;
+}
+
+.field-distortion--strongest {
+  opacity: calc(0.28 + var(--distortion-strength) * 0.24);
+  background:
+    repeating-radial-gradient(ellipse at center, rgba(71, 63, 47, 0.18) 0 1px, transparent 2px 7px),
+    radial-gradient(ellipse at center, rgba(254, 242, 202, 0.34), rgba(171, 117, 45, 0.12) 48%, transparent 74%);
+}
+
+.movement-ripple {
+  position: absolute;
+  left: var(--ripple-x);
+  top: var(--ripple-y);
+  width: 14px;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--ripple-color), transparent 26%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 1px rgba(255, 252, 226, 0.24),
+    inset 0 0 9px color-mix(in srgb, var(--ripple-color), transparent 72%);
+  filter: blur(0.15px);
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.16);
+  animation: water-ripple 2.4s ease-out forwards;
+}
+
+.movement-ripple::before,
+.movement-ripple::after {
+  position: absolute;
+  inset: -42%;
+  border: 1px solid color-mix(in srgb, var(--ripple-color), transparent 48%);
+  border-radius: inherit;
+  content: "";
+}
+
+.movement-ripple::after {
+  inset: -86%;
+  opacity: 0.62;
+}
+
+.movement-ripple--drone {
+  --ripple-color: #718153;
+}
+
+.movement-ripple--tape {
+  --ripple-color: #ad7a2f;
+}
+
+.movement-ripple--drift {
+  --ripple-color: #527384;
+}
+
+.field-pollen {
+  position: absolute;
+  inset: 0;
+  opacity: 0.72;
+}
+
+.field-pollen__particle {
+  position: absolute;
+  left: var(--pollen-x);
+  top: var(--pollen-y);
+  width: var(--pollen-size);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pollen-color), #fff7d2 42%);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--pollen-color), transparent 62%);
+  opacity: calc(0.24 + var(--pollen-presence) * 0.34);
+  transform: translate(var(--pollen-drift-x), var(--pollen-drift-y));
+  animation: pollen-float var(--pollen-duration) ease-in-out var(--pollen-delay) infinite alternate;
+}
+
+.field-pollen__particle--drone {
+  --pollen-color: #7a865a;
+}
+
+.field-pollen__particle--tape {
+  --pollen-color: #b9843a;
+}
+
+.field-pollen__particle--drift {
+  --pollen-color: #5f7f8c;
+}
+
 .field-object {
   position: absolute;
   z-index: 3;
@@ -164,6 +272,7 @@ button {
 }
 
 .field-object__aura,
+.field-object__presence,
 .field-object__core {
   position: absolute;
   border-radius: 999px;
@@ -181,6 +290,17 @@ button {
   animation: breathe 7s ease-in-out infinite;
 }
 
+.field-object__presence {
+  inset: -22%;
+  opacity: 0.78;
+  background:
+    repeating-radial-gradient(circle, color-mix(in srgb, var(--node-color), transparent 72%) 0 1px, transparent 2px 9px),
+    conic-gradient(from 22deg, transparent, color-mix(in srgb, var(--node-color), transparent 80%), transparent 34%, rgba(255, 248, 214, 0.18), transparent 72%);
+  filter: blur(0.25px);
+  mix-blend-mode: multiply;
+  animation: presence-drift 14s ease-in-out infinite;
+}
+
 .field-object__core {
   width: 74%;
   height: 74%;
@@ -193,6 +313,7 @@ button {
     0 0 0 16px rgba(255, 255, 245, 0.13),
     0 16px 34px rgba(54, 47, 34, 0.31),
     inset 0 0 22px rgba(255, 249, 214, 0.16);
+  animation: core-presence 9s ease-in-out infinite;
 }
 
 .field-object__sigil {
@@ -212,6 +333,34 @@ button {
 
 .field-object--drift {
   --node-color: #557486;
+}
+
+.field-object--drone .field-object__aura {
+  animation-duration: 10s;
+}
+
+.field-object--drone .field-object__core {
+  animation-duration: 12s;
+}
+
+.field-object--tape .field-object__aura {
+  animation-duration: 8.5s;
+}
+
+.field-object--tape .field-object__presence {
+  opacity: 0.66;
+  background:
+    repeating-radial-gradient(circle, rgba(92, 61, 31, 0.18) 0 1px, transparent 2px 7px),
+    conic-gradient(from 10deg, transparent, rgba(172, 116, 41, 0.18), transparent 42%, rgba(86, 63, 38, 0.16), transparent 75%);
+}
+
+.field-object--drift .field-object__aura {
+  animation-duration: 6.5s;
+}
+
+.field-object--drift .field-object__presence {
+  animation-name: presence-drift-light;
+  animation-duration: 11s;
 }
 
 .field-object--tape .field-object__sigil {
@@ -259,6 +408,9 @@ button {
   fill: none;
   stroke: rgba(83, 73, 54, 0.34);
   stroke-dasharray: 0.45 0.8;
+  opacity: 0.82;
+  transform-box: fill-box;
+  animation: field-breath 11s ease-in-out infinite;
   vector-effect: non-scaling-stroke;
 }
 
@@ -283,21 +435,27 @@ button {
 
 .observe-overlay__field--drone {
   stroke: rgba(83, 103, 58, 0.68);
+  animation-duration: 12.8s;
 }
 
 .observe-overlay__field--tape {
   stroke: rgba(166, 112, 34, 0.64);
+  animation-duration: 10.6s;
+  animation-delay: -2s;
 }
 
 .observe-overlay__field--drift {
   stroke: rgba(58, 93, 109, 0.62);
+  animation-duration: 8.8s;
+  animation-delay: -4s;
 }
 
 .observe-overlay__line {
   fill: none;
   stroke-linecap: round;
-  stroke-dasharray: 0.55 0.62;
+  stroke-dasharray: 0.52 0.74;
   opacity: 0.58;
+  animation: thread-flow 9s linear infinite, thread-breath 6.8s ease-in-out infinite;
   vector-effect: non-scaling-stroke;
 }
 
@@ -312,6 +470,21 @@ button {
 .observe-overlay__line--hybrid,
 .observe-overlay__line--behavior {
   stroke: rgba(90, 105, 64, 0.66);
+}
+
+.observe-overlay__line--strongest {
+  opacity: 0.84;
+  stroke-dasharray: 0.68 0.56;
+}
+
+.observe-overlay__line-flow {
+  fill: none;
+  stroke: rgba(255, 249, 221, 0.58);
+  stroke-linecap: round;
+  stroke-dasharray: 0.16 1.08;
+  opacity: 0.5;
+  animation: thread-flow 6.4s linear infinite reverse;
+  vector-effect: non-scaling-stroke;
 }
 
 .toolbar {
@@ -717,6 +890,124 @@ button {
   50% {
     opacity: 0.62;
     transform: scale(1.04);
+  }
+}
+
+@keyframes field-breath {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.985) rotate(-0.4deg);
+  }
+
+  50% {
+    opacity: 0.95;
+    transform: scale(1.035) rotate(0.35deg);
+  }
+}
+
+@keyframes water-ripple {
+  0% {
+    opacity: 0.42;
+    transform: translate(-50%, -50%) scale(0.18);
+  }
+
+  46% {
+    opacity: 0.24;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(8.6);
+  }
+}
+
+@keyframes pollen-float {
+  0% {
+    transform: translate(var(--pollen-drift-x), var(--pollen-drift-y)) translate3d(-7px, 5px, 0);
+  }
+
+  45% {
+    transform: translate(var(--pollen-drift-x), var(--pollen-drift-y)) translate3d(4px, -9px, 0);
+  }
+
+  100% {
+    transform: translate(var(--pollen-drift-x), var(--pollen-drift-y)) translate3d(9px, 3px, 0);
+  }
+}
+
+@keyframes thread-flow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: -8;
+  }
+}
+
+@keyframes thread-breath {
+  0%,
+  100% {
+    opacity: 0.46;
+  }
+
+  50% {
+    opacity: 0.82;
+  }
+}
+
+@keyframes distortion-tide {
+  0%,
+  100% {
+    filter: blur(0.8px);
+    transform: translate(-50%, -50%) rotate(var(--distortion-angle)) scale(0.94, 0.98);
+  }
+
+  50% {
+    filter: blur(1.2px);
+    transform: translate(-50%, -50%) rotate(var(--distortion-angle)) scale(1.04, 1.08);
+  }
+}
+
+@keyframes presence-drift {
+  0%,
+  100% {
+    transform: rotate(-3deg) scale(0.98);
+  }
+
+  50% {
+    transform: rotate(4deg) scale(1.04);
+  }
+}
+
+@keyframes presence-drift-light {
+  0%,
+  100% {
+    transform: translate(-2px, 1px) rotate(-8deg) scale(0.96);
+  }
+
+  50% {
+    transform: translate(3px, -2px) rotate(9deg) scale(1.05);
+  }
+}
+
+@keyframes core-presence {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 7px color-mix(in srgb, var(--node-color), transparent 82%),
+      0 0 0 16px rgba(255, 255, 245, 0.13),
+      0 16px 34px rgba(54, 47, 34, 0.31),
+      inset 0 0 22px rgba(255, 249, 214, 0.16);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 9px color-mix(in srgb, var(--node-color), transparent 78%),
+      0 0 0 19px rgba(255, 255, 245, 0.16),
+      0 18px 38px rgba(54, 47, 34, 0.34),
+      inset 0 0 29px rgba(255, 249, 214, 0.2);
   }
 }
 

@@ -69,6 +69,7 @@ export function FieldObject({ object, fieldRef }: FieldObjectProps) {
       onPointerDown={handlePointerDown}
     >
       <span className="field-object__aura" />
+      <span className="field-object__presence" />
       <span className="field-object__core">
         <span className="field-object__sigil" />
       </span>

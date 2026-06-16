@@ -7,12 +7,16 @@ interface ObserveOverlayProps {
 
 export function ObserveOverlay({ objects, relationships }: ObserveOverlayProps) {
   const strongestRelationships = relationships.slice(0, 4);
+  const strongestRelationshipId = strongestRelationships[0]?.id;
 
   return (
     <svg className="observe-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
       <defs>
         <filter id="breath-blur">
           <feGaussianBlur stdDeviation="0.08" />
+        </filter>
+        <filter id="thread-soften">
+          <feGaussianBlur stdDeviation="0.035" />
         </filter>
       </defs>
       {objects.map((object) => {
@@ -23,6 +27,9 @@ export function ObserveOverlay({ objects, relationships }: ObserveOverlayProps) 
             key={object.id}
             className={`observe-overlay__field observe-overlay__field--${object.type}`}
             filter="url(#breath-blur)"
+            style={{
+              transformOrigin: `${object.x}% ${object.y}%`,
+            }}
           >
             <ellipse cx={object.x} cy={object.y} rx={radius * 1.18} ry={radius * 0.82} />
             <circle cx={object.x} cy={object.y} r={radius * 0.72} />
@@ -43,12 +50,20 @@ export function ObserveOverlay({ objects, relationships }: ObserveOverlayProps) 
         const controlY = (from.y + to.y) / 2 - (to.x - from.x) * 0.08;
 
         return (
-          <path
-            key={relationship.id}
-            className={`observe-overlay__line observe-overlay__line--${relationship.kind}`}
-            d={`M ${from.x} ${from.y} Q ${controlX} ${controlY} ${to.x} ${to.y}`}
-            strokeWidth={0.1 + relationship.strength * 0.22}
-          />
+          <g key={relationship.id} filter="url(#thread-soften)">
+            <path
+              className={`observe-overlay__line observe-overlay__line--${relationship.kind} ${
+                relationship.id === strongestRelationshipId ? "observe-overlay__line--strongest" : ""
+              }`}
+              d={`M ${from.x} ${from.y} Q ${controlX} ${controlY} ${to.x} ${to.y}`}
+              strokeWidth={0.08 + relationship.strength * 0.18}
+            />
+            <path
+              className="observe-overlay__line-flow"
+              d={`M ${from.x} ${from.y} Q ${controlX} ${controlY} ${to.x} ${to.y}`}
+              strokeWidth={0.03 + relationship.strength * 0.08}
+            />
+          </g>
         );
       })}
     </svg>
